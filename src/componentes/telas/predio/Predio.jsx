@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import PredioContext from './PredioContext';
 import Tabela from './Tabela';
 import Form from './Form';
+import { getPrediosAPI, getPredioPorCodigoAPI, 
+    deletePredioPorCodigoAPI, cadastraPredioAPI } from '../../../servicos/PredioServico';
 
 function Predio() {
 
@@ -14,35 +16,19 @@ function Predio() {
     })
 
     const recuperar = async codigo => {
-        await fetch(`${process.env.REACT_APP_ENDERECO_API}/predios/${codigo}`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-            .then(response => response.json())
-            .then(data => setObjeto(data))
-            .catch(err => console.log(err))          
+        setObjeto(await getPredioPorCodigoAPI(codigo))
     }
 
     const acaoCadastrar = async e => {
         e.preventDefault();
         const metodo = editar ? "PUT" : "POST";
         try {
-            await fetch(`${process.env.REACT_APP_ENDERECO_API}/predios`, {
-                method: metodo,
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(objeto),
-            }).then(response => response.json())
-                .then(json => {
-                    setAlerta({ status: json.status, message: json.message });
-                    console.log(JSON.stringify(json.objeto));
-                    setObjeto(json.objeto);
-                    if (!editar) {
-                        setEditar(true);
-                    }
-                });
+            let retornoAPI = await cadastraPredioAPI(objeto, metodo);
+            setAlerta({ status: retornoAPI.status, message: retornoAPI.message });
+            setObjeto(retornoAPI.objeto);
+            if (!editar) {
+                setEditar(true);
+            }
         } catch (err) {
             console.error(err.message);
         }
@@ -56,34 +42,14 @@ function Predio() {
     }
 
     const recuperaPredios = async () => {
-        await fetch(`${process.env.REACT_APP_ENDERECO_API}/predios`,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-            .then(response => response.json())
-            .then(data => setListaObjetos(data))
-            .catch(err => console.log('Erro: ' + err))
+        setListaObjetos(await getPrediosAPI());
     }
 
     const remover = async objeto => {
         if (window.confirm('Deseja remover este objeto?')) {
-            try {
-                await fetch(`${process.env.REACT_APP_ENDERECO_API}/predios/${objeto.codigo}`,
-                    {
-                        method: "DELETE", 
-                        headers: {
-                            "Content-Type": "application/json"
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(json => setAlerta({ status: json.status, message: json.message }))
-                recuperaPredios();
-            } catch (err) {
-                console.log('Erro: ' + err)
-            }
+            let retornoAPI = await deletePredioPorCodigoAPI(objeto.codigo);
+            setAlerta({ status: retornoAPI.status, message: retornoAPI.message })
+            recuperaPredios();
         }
     }
 
