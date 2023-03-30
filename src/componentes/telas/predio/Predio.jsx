@@ -4,6 +4,7 @@ import Tabela from './Tabela';
 import Form from './Form';
 import { getPrediosAPI, getPredioPorCodigoAPI, 
     deletePredioPorCodigoAPI, cadastraPredioAPI } from '../../../servicos/PredioServico';
+import Carregando from '../../comuns/Carregando';
 
 function Predio() {
 
@@ -14,6 +15,7 @@ function Predio() {
     const [objeto, setObjeto] = useState({
         codigo: "", nome: "", descricao: "", sigla: ""
     })
+    const [carregando, setCarregando] = useState(true);
 
     const recuperar = async codigo => {
         setObjeto(await getPredioPorCodigoAPI(codigo))
@@ -42,7 +44,9 @@ function Predio() {
     }
 
     const recuperaPredios = async () => {
+        setCarregando(true);
         setListaObjetos(await getPrediosAPI());
+        setCarregando(false);
     }
 
     const remover = async objeto => {
@@ -71,7 +75,7 @@ function Predio() {
                 handleChange
             }
         }>
-            <Tabela />
+             { !carregando ? <Tabela /> : <Carregando/> }
             <Form />
         </PredioContext.Provider>
     );

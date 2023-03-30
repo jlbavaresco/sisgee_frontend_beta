@@ -3,8 +3,11 @@ import SalaContext from './SalaContext';
 import Tabela from './Tabela';
 import Form from './Form';
 import { getPrediosAPI } from '../../../servicos/PredioServico';
-import { getSalasAPI, getSalaPorCodigoAPI, 
-    deleteSalaPorCodigoAPI, cadastraSalaAPI } from '../../../servicos/SalaServico';
+import {
+    getSalasAPI, getSalaPorCodigoAPI,
+    deleteSalaPorCodigoAPI, cadastraSalaAPI
+} from '../../../servicos/SalaServico';
+import Carregando from '../../comuns/Carregando';
 
 function Sala() {
 
@@ -15,7 +18,8 @@ function Sala() {
     const [editar, setEditar] = useState(false);
     const [objeto, setObjeto] = useState({
         codigo: "", nome: "", descricao: "", sigla: ""
-    })
+    });
+    const [carregando, setCarregando] = useState(true);
 
     const recuperar = async codigo => {
         setObjeto(await getSalaPorCodigoAPI(codigo))
@@ -48,7 +52,9 @@ function Sala() {
     }
 
     const recuperaSalas = async () => {
+        setCarregando(true);
         setListaObjetos(await getSalasAPI());
+        setCarregando(false);
     }
 
     const remover = async objeto => {
@@ -78,7 +84,7 @@ function Sala() {
                 handleChange, listaPredios
             }
         }>
-            <Tabela />
+            {!carregando ? <Tabela /> : <Carregando />}
             <Form />
         </SalaContext.Provider>
     );
