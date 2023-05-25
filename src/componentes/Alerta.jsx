@@ -6,13 +6,9 @@ const Alerta = ({ alerta }) => {
 
     useEffect(() => {
         setExibir(true);
-
-        const id = setTimeout(() => {
+        setTimeout(() => {
             setExibir(false);
         }, 2000);
-
-        return () => clearTimeout(id);
-
     }, [alerta]);
 
     var classe = '';
