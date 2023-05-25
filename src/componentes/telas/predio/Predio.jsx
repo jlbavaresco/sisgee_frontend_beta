@@ -2,8 +2,10 @@ import { useState, useEffect } from 'react';
 import PredioContext from './PredioContext';
 import Tabela from './Tabela';
 import Form from './Form';
-import { getPrediosAPI, getPredioPorCodigoAPI, 
-    deletePredioPorCodigoAPI, cadastraPredioAPI } from '../../../servicos/PredioServico';
+import {
+    getPrediosAPI, getPredioPorCodigoAPI,
+    deletePredioPorCodigoAPI, cadastraPredioAPI
+} from '../../../servicos/PredioServico';
 import Carregando from '../../comuns/Carregando';
 
 function Predio() {
@@ -75,7 +77,9 @@ function Predio() {
                 handleChange
             }
         }>
-             { !carregando ? <Tabela /> : <Carregando/> }
+            <Carregando carregando={carregando}>
+                <Tabela />
+            </Carregando>
             <Form />
         </PredioContext.Provider>
     );

@@ -133,7 +133,9 @@ function Sala() {
             recuperarEquipamento, acaoCadastrarEquipamento, setEditarEquipamento, editarEquipamento,
             recuperarEquipamentos, setExibirEquipamento
         }}>
-            {!carregando ? !exibirEquipamento ? <Tabela /> : <TabelaEquipamentos /> : <Carregando />}
+            <Carregando carregando={carregando}>                
+                {!exibirEquipamento ? <Tabela /> : <TabelaEquipamentos />}
+            </Carregando>
             <Form />
             <FormEquipamento />
         </SalaContext.Provider>
