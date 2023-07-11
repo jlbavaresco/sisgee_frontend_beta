@@ -32,6 +32,24 @@ function Sala() {
     const [listaEquipamentos, setListaEquipamentos] = useState([]);
     const [exibirEquipamento, setExibirEquipamento] = useState(false);
 
+    const novoObjeto = () => {
+        setEditar(false);
+        setAlerta({ status: "", message: "" });
+        setObjeto({
+            codigo: 0,
+            numero: "",
+            descricao: "",
+            capacidade: "",
+            predio: ""
+        });
+    }
+
+    const editarObjeto = async codigo => {        
+        setObjeto(await getSalaPorCodigoAPI(codigo));
+        setEditar(true);
+        setAlerta({ status: "", message: "" });
+    }    
+
     const recuperarEquipamentos = async codigosala => {
         setObjeto(await getSalaPorCodigoAPI(codigosala));
         setExibirEquipamento(true);
@@ -72,10 +90,6 @@ function Sala() {
         setEquipamento({ ...equipamento, [name]: value });
     }
 
-    const recuperar = async codigo => {
-        setObjeto(await getSalaPorCodigoAPI(codigo))
-    }
-
     const acaoCadastrar = async e => {
         e.preventDefault();
         const metodo = editar ? "PUT" : "POST";
@@ -108,9 +122,9 @@ function Sala() {
         setCarregando(false);
     }
 
-    const remover = async objeto => {
+    const remover = async codigo => {
         if (window.confirm('Deseja remover este objeto?')) {
-            let retornoAPI = await deleteSalaPorCodigoAPI(objeto.codigo);
+            let retornoAPI = await deleteSalaPorCodigoAPI(codigo);
             setAlerta({ status: retornoAPI.status, message: retornoAPI.message });
             recuperaSalas();
         }
@@ -127,8 +141,9 @@ function Sala() {
             listaObjetos, setListaObjetos,
             recuperaPredios, remover,
             objeto, setObjeto,
-            editar, setEditar,
-            recuperar, acaoCadastrar, handleChange, listaPredios, listaEquipamentos,
+            editar, setEditar, acaoCadastrar, handleChange, 
+            novoObjeto, editarObjeto,
+            listaPredios, listaEquipamentos,
             equipamento, setEquipamento, handleChangeEquipamento, removerEquipamento,
             recuperarEquipamento, acaoCadastrarEquipamento, setEditarEquipamento, editarEquipamento,
             recuperarEquipamentos, setExibirEquipamento

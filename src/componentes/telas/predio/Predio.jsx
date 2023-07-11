@@ -19,8 +19,21 @@ function Predio() {
     })
     const [carregando, setCarregando] = useState(true);
 
-    const recuperar = async codigo => {
+    const novoObjeto = () => {
+        setEditar(false);
+        setAlerta({ status: "", message: "" });
+        setObjeto({
+            codigo: 0,
+            nome: "",
+            descricao: "",
+            sigla: ""
+        });
+    }
+
+    const editarObjeto = async codigo => {
         setObjeto(await getPredioPorCodigoAPI(codigo))
+        setEditar(true);
+        setAlerta({ status: "", message: "" });
     }
 
     const acaoCadastrar = async e => {
@@ -51,9 +64,9 @@ function Predio() {
         setCarregando(false);
     }
 
-    const remover = async objeto => {
+    const remover = async codigo => {
         if (window.confirm('Deseja remover este objeto?')) {
-            let retornoAPI = await deletePredioPorCodigoAPI(objeto.codigo);
+            let retornoAPI = await deletePredioPorCodigoAPI(codigo);
             setAlerta({ status: retornoAPI.status, message: retornoAPI.message })
             recuperaPredios();
         }
@@ -72,9 +85,8 @@ function Predio() {
                 remover,
                 objeto, setObjeto,
                 editar, setEditar,
-                recuperar,
                 acaoCadastrar,
-                handleChange
+                handleChange, novoObjeto, editarObjeto
             }
         }>
             <Carregando carregando={carregando}>
